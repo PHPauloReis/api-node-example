@@ -15,9 +15,14 @@ class UserController {
 
         const usersRepository = getCustomRepository(UsersRepository);
 
-        const user = await usersRepository.findOne(id)
-
-        return response.json(user);
+        try {
+            const user = await usersRepository.findOneOrFail(id);
+            return response.status(200).json(user);
+        } catch(e) {
+            return response.status(404).send({
+                error: "User not found!"
+            });
+        }
     }
 
     async create(request: Request, response: Response) {
@@ -48,13 +53,19 @@ class UserController {
 
         const usersRepository = getCustomRepository(UsersRepository);
 
-        const user = await usersRepository.findOne(id);
-        user.name = name;
-        user.email = email;
-        
-        usersRepository.update({ id }, user);
+        try {
+            const user = await usersRepository.findOneOrFail(id);
+            user.name = name;
+            user.email = email;
+            
+            usersRepository.update({ id }, user);
 
-        response.json(user);
+            return response.json(user);
+        } catch {
+            return response.status(404).send({
+                error: "User not found!"
+            });
+        }
     }
 
     async delete(request: Request, response: Response) {
@@ -62,9 +73,18 @@ class UserController {
 
         const usersRepository = getCustomRepository(UsersRepository);
 
-        usersRepository.delete({ id });
+        try {
+            const user = await usersRepository.findOneOrFail(id);
+            usersRepository.delete({ id });
 
-        response.status(204).json({});
+            return response.status(201).json({
+                success: "User deleted successfully!"
+            });
+        } catch {
+            return response.status(404).json({
+                error: "User not found!"
+            });
+        }
     }
 
 }
