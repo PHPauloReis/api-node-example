@@ -4,8 +4,6 @@ import { UsersRepository } from '../repositories/UsersRepository';
 
 class UserController {
 
-    protected usersRepository: UsersRepository;
-
     async all(request: Request, response: Response) {
         const usersRepository = getCustomRepository(UsersRepository);
         const users = await usersRepository.find();
@@ -48,13 +46,13 @@ class UserController {
         const { id } = request.params;
         const { name, email } = request.body;
 
-        const usersRepostitory = getCustomRepository(UsersRepository);
+        const usersRepository = getCustomRepository(UsersRepository);
 
-        const user = await usersRepostitory.findOne(id);
+        const user = await usersRepository.findOne(id);
         user.name = name;
         user.email = email;
         
-        usersRepostitory.update({ id }, user);
+        usersRepository.update({ id }, user);
 
         response.json(user);
     }
