@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { UserController } from './controllers/UserController';
 import { SurveyController } from './controllers/SurveyController';
+import { SendMailController } from './controllers/SendMailController';
 
 const router = Router();
 
@@ -19,5 +20,9 @@ router.get("/surveys/:id", surveyController.view);
 router.post("/surveys", surveyController.create);
 router.put("/surveys/:id", surveyController.update);
 router.delete("/surveys/:id", surveyController.delete);
+
+const sendMailController = new SendMailController();
+
+router.post("/sendmail", sendMailController.execute);
 
 export { router };
